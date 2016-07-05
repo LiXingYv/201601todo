@@ -1,0 +1,23 @@
+{
+  "name": "todolist",
+  "description": "",
+  "main": "",
+  "authors": [
+    "LiXingYv <1450982558@qq.com>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.7",
+    "jquery": "^2.2.4",
+    "bootstrap": "^3.3.6"
+  }
+}
