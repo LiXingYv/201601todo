@@ -1,12 +1,13 @@
 # 项目命令
 ##1.安装express生成器
-> npm install express-genertor -g
+> npm install express-generator -g
 
 ##2.生成项目
 > npm install -e todolist
 
 ##3.安装bower命令行工具
 > npm install -g bower
+>一定要注意bower要安装在全局下。
 
 ##4.初始化bower配置文件
 > bower init
@@ -15,7 +16,6 @@
 {"directory":"./public/lib"}
 > 如果没有此配置项，则安装到bower_components目录下
 > 注意文件名不能错，只能是.bowerrc
->一定要注意bower要安装在全局下。
 
 ##6.依次安装前端框架
 > bower install jquery --save
@@ -38,4 +38,9 @@ git add -A
 git commit -m"init"
 git remote add origin 远程仓库
 git push -u origin master
+```
+
+##9.安装mongodb
+```
+npm install mongoose --save
 ```

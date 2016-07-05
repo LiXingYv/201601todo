@@ -4,7 +4,7 @@ git clone xxxx
 ```
 #安装前后台依赖的库
 ```
-npm install && bower install
+cd xxx && npm install && bower install
 ```
 #启动项目
 ```
