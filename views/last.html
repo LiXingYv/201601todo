@@ -7,8 +7,6 @@
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
         <link rel='stylesheet' href='../public/lib/bootstrap/dist/css/bootstrap.css' />
         <link rel='stylesheet' href='/lib/bootstrap/dist/css/bootstrap.css' />
-        <link rel="stylesheet" href="../public/font-awesome-4.5.0/css/font-awesome.css">
-        <link rel="stylesheet" href="/font-awesome-4.5.0/css/font-awesome.css">
     </head>
     <body style="margin-top:30px;">
         <div class="container" ng-controller="todoController">
@@ -17,15 +15,12 @@
             </div>
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
-                    <p class="text-center" ng-show="loading">
-                        <i class="fa fa-spinner fa-spin"></i>
-                    </p>
                     <button class="btn btn-success" ng-click="selectAll()">全选</button>
                     <ul class="list-group">
                         <li class="list-group-item" ng-repeat="todo in todos">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" ng-click="todo.checked=!todo.checked" ng-checked="todo.checked">{{todo.text}}<span class="glyphicon glyphicon-minus" ng-click="delete(todo._id)"></span>
+                                    <input type="checkbox" ng-click="isSelected(todo._id)" ng-checked="checked">{{todo.text}}<span class="glyphicon glyphicon-minus" ng-click="delete(todo._id)"></span>
                                 </label>
                             </div>
                         </li>
@@ -75,84 +70,60 @@
 //                    }
 //                    Json.stringfy(json);
 
-                    return $http.post('/todos/delete',data);
+                    return $http.delete('/todos/delete/'+data);
                 }
             }
         });
         angular.module('todoModule').controller('todoController',function($scope,todoService){
-            $scope.loading = true;
             //向服务器请求所有的待办事项，返回一个promise
             todoService.list().success(function(todos){
-                todos.forEach(function(todo){
-                    todo.checked = false;
-                });
-                $scope.todos=todos;
-                $scope.loading = false;
+                $scope.todos = todos;
             });
             $scope.todos = [{_id:1,text:'买宝马'},{_id:2,text:'买幻影'}];
             $scope.todo = {};
-            $scope.all = false;
+            $scope.selected = [];
+            $scope.checked = 0;
             $scope.addTodo = function(){
-                $scope.loading = true;
                 //保存新的事项
                 todoService.add($scope.todo).success(function(todo){
                     $scope.todos.push(todo);
-                    $scope.loading = false;
                 });
             }
             $scope.delete= function(id){
-                $scope.loading = true;
+
                 todoService.delete(id).success(function(data){
                     $scope.todos = $scope.todos.filter(function(todo){
                         return todo._id != id;
                     });
-                    $scope.loading = false;
                 });
             }
 
-            /*$scope.isSelected = function(id){
+            $scope.isSelected = function(id){
                 var index = $scope.selected.indexOf(id)
                 if(index>=0){
                     $scope.selected.splice(index,1);
                 }else{
                     $scope.selected.push(id);
                 }
-            };*/
+            };
 
             $scope.batchDelete = function(){
-                $scope.loading = true;
-                var selectedIds=[];
-                $scope.todos.forEach(function(todo){
-                    if(todo.checked){
-                        selectedIds.push(todo._id);
-                    }
-                });
-                todoService.batchDelete(selectedIds).success(function(){
+                todoService.batchDelete($scope.selected).success(function(){
                     $scope.todos = $scope.todos.filter(function(todo){
-                        return selectedIds.indexOf(todo._id) == -1;
-                    });
-                    $scope.loading = false;
+                        return $scope.selected.indexOf(todo._id) == -1;
+                    })
                 })
             };
             $scope.selectAll = function(){
-//                $scope.all = !$scope.all;
-//                $scope.todos.forEach(function(todo){
-//                    todo.checked = $scope.all;
-//                });
-                var all = $scope.todos.length;
-                var length = $scope.todos.filter(function (todo) {
-                    return todo.checked;
-                }).length;
-                if(all == length){
-                    $scope.todos.forEach(function (todo) {
-                        todo.checked = false;
-                    })
-                }else{
+                $scope.checked = $scope.checked?0:1;
+                //清空要删除的id列表
+                $scope.selected.length = 0;
+                //如果是全选的话，要把所有的id全部添加到删除的id列表中
+                if($scope.checked){
                     $scope.todos.forEach(function(todo){
-                        todo.checked = true;
-                    })
+                        $scope.selected.push(todo._id);
+                    });
                 }
-
             }
         });
     </script>
